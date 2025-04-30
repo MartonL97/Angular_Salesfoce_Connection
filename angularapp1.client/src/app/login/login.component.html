@@ -1,0 +1,9 @@
+<!-- login.component.html -->
+<div class="login-container">
+  <h2>Login to Player Management Salesforce POC</h2>
+  <form (ngSubmit)="getStores()" #loginForm="ngForm" class="login-form">
+    <button type="submit" class="login-btn" [disabled]="!loginForm.valid">
+      Login
+    </button>
+  </form>
+</div>
