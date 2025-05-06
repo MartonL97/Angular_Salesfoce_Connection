@@ -1,14 +1,15 @@
-﻿:host {
-    max-width: 1280px;
-    padding: 2rem;
-    text-align: center;
+/* app.component.css */
+.default-page {
+  text-align: center;
+  margin-top: 50px;
 }
 
-th, td {
-    padding-left: 1rem;
-    padding-right: 1rem;
-}
+  .default-page h1 {
+    font-size: 2em;
+    color: #333;
+  }
 
-table {
-    margin: 0 auto;
-}
+  .default-page p {
+    font-size: 1.2em;
+    color: #666;
+  }

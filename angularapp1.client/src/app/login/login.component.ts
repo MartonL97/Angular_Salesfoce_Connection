@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-login',
@@ -7,39 +6,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
+export class LoginComponent {
+  loginData = {
+    email: '',
+    password: '',
+  };
 
-export class LoginComponent implements OnInit {
-
-  constructor(private http: HttpClient) { }
-
-  ngOnInit(): void {
-
+  onSubmit() {
+    console.log('Login attempt:', this.loginData);
+    // TODO: Add login logic here (e.g. API call)
   }
-
-  getToken() {
-
-    this.http.get<string>('/user').subscribe(
-      (result) => {
-        console.log(result);
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-  }
-
-  getStores() {
-
-    this.http.get<string>('/salesforce/store').subscribe(
-      (result) => {
-        console.log(result);
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-  }
-
-  }
-
-
+}

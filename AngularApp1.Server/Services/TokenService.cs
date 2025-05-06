@@ -140,7 +140,6 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
         return token.ToString();
     }
 
-
     private FormUrlEncodedContent CreateJwtBearerTokenContent(string jwtToken)
     {
         return new FormUrlEncodedContent(new Dictionary<string, string>

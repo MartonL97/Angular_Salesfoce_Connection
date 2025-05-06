@@ -1,9 +1,25 @@
-<!-- login.component.html -->
 <div class="login-container">
-  <h2>Login to Player Management Salesforce POC</h2>
-  <form (ngSubmit)="getStores()" #loginForm="ngForm" class="login-form">
-    <button type="submit" class="login-btn" [disabled]="!loginForm.valid">
-      Login
-    </button>
+  <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+    <h2>Login</h2>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email"
+             id="email"
+             name="email"
+             [(ngModel)]="loginData.email"
+             required />
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password"
+             id="password"
+             name="password"
+             [(ngModel)]="loginData.password"
+             required />
+    </div>
+
+    <button type="submit" [disabled]="!loginForm.form.valid">Login</button>
   </form>
 </div>
