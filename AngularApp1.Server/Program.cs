@@ -18,6 +18,7 @@ builder.Services.AddSingleton<TokenStore>();
 
 // Register the custom Salesforce service
 builder.Services.AddScoped<ISalesforceService, SalesforceService>();
+builder.Services.AddScoped<ISalesforceAuthService, AuthService>();
 
 // Register TokenService
 builder.Services.AddSingleton<TokenService>();

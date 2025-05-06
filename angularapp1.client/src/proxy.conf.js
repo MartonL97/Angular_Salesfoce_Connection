@@ -7,7 +7,8 @@ const PROXY_CONFIG = [
   {
     context: [
       "/user",
-      "/salesforce"
+      "/salesforce",
+      "/api/Auth/login"
     ],
     target,
     secure: false

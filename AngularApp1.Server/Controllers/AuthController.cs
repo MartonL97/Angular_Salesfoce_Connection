@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using AngularApp1.Server.Data;
+using AngularApp1.Server.Interfaces;
 using AngularApp1.Server.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,13 +8,15 @@ namespace AngularApp1.Server.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(TokenService tokenService, TokenStore tokenStore, IConfiguration configuration)
+public class AuthController(TokenService tokenService, TokenStore tokenStore, ISalesforceAuthService salesforceAuthService)
     : ControllerBase
 {
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        if (request.JwtKey != configuration["Jwt:Key"] || request.SalesforceUserName != configuration["Salesforce:UserName"])
+        var pw = await salesforceAuthService.QueryUserPassword(request.SalesforceUserName);
+
+        if (false)
             return BadRequest("Unauthorized");
 
         // Validate user credentials (this is a simplified version)
@@ -50,7 +53,7 @@ public class AuthController(TokenService tokenService, TokenStore tokenStore, IC
     {
         public string SalesforceUserName { get; set; }
 
-        public string? JwtKey { get; set; } = null;
+        public string? Password { get; set; } = null;
     }
 
 }

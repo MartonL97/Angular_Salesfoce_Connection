@@ -8,21 +8,14 @@ namespace AngularApp1.Server.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize]
-    public class SalesforceController : ControllerBase
+    public class SalesforceController(ISalesforceService salesforceService) : ControllerBase
     {
-        private readonly ISalesforceService _salesforceService;
-
-        public SalesforceController(ISalesforceService salesforceService)
-        {
-            _salesforceService = salesforceService;
-        }
-
         [HttpGet("store")]
         public async Task<IActionResult> GetStore()
         {
             try
             {
-                var data = await _salesforceService.GetSalesforceDataAsync();
+                var data = await salesforceService.GetSalesforceDataAsync();
                 return Ok(JsonDocument.Parse(data));
             }
             catch (Exception ex)
