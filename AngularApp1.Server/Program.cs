@@ -13,6 +13,9 @@ builder.Services.AddControllersWithViews(); // Use MVC with views
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Register TokenStore as Singleton to share the same instance
+builder.Services.AddSingleton<TokenStore>();
+
 // Register the custom Salesforce service
 builder.Services.AddScoped<ISalesforceService, SalesforceService>();
 
@@ -34,13 +37,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? string.Empty))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
     });
 
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+// Ensure the tokens are retrieved and stored on application startup
+var tokenService = app.Services.GetRequiredService<TokenService>();
+await tokenService.RetrieveAndStoreTokensAsync();
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
