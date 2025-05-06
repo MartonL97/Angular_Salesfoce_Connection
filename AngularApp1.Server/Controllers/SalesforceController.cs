@@ -1,4 +1,5 @@
 ﻿using AngularApp1.Server.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -6,6 +7,7 @@ namespace AngularApp1.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class SalesforceController : ControllerBase
     {
         private readonly ISalesforceService _salesforceService;

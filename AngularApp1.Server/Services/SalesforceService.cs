@@ -10,6 +10,7 @@ namespace AngularApp1.Server.Services
     public class SalesforceService(IConfiguration configuration) : ISalesforceService
     {
         private readonly IConfiguration _configuration = configuration;
+        private readonly HttpClient _httpClient;
 
         public async  Task<string> GetSalesforceDataAsync()
         {

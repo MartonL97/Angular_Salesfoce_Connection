@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using AngularApp1.Server.Data;
 using AngularApp1.Server.Interfaces;
 using AngularApp1.Server.Services;
@@ -6,15 +9,36 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews(); // ? Use MVC with views
-
+builder.Services.AddControllersWithViews(); // Use MVC with views
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Register the custom Salesforce service
+builder.Services.AddScoped<ISalesforceService, SalesforceService>();
+
+// Register TokenService
+builder.Services.AddSingleton<TokenService>();
+
+// Add Swagger
 builder.Services.AddSwaggerGen();
 
-// Register custom Salesforce service
-builder.Services.AddScoped<ISalesforceService, SalesforceService>();
+// JWT Authentication Setup
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? string.Empty))
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -29,13 +53,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Enable Authentication and Authorization
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllerRoute( // ? Map MVC routes
+app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// Remove this if you're not using Angular routing fallback:
-app.MapFallbackToFile("/index.html"); // ? Only for SPA fallback. Comment/remove if using pure MVC.
+app.MapFallbackToFile("/index.html");
 
 app.Run();
