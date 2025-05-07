@@ -8,7 +8,7 @@ namespace AngularApp1.Server.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(TokenService tokenService, TokenStore tokenStore, ISalesforceAuthService salesforceAuthService)
+public class AuthController(TokenService tokenService, TokenStore tokenStore, ISalesforceAuthService salesforceAuthService, IConfiguration configuration)
     : ControllerBase
 {
     [HttpPost("login")]
@@ -43,7 +43,7 @@ public class AuthController(TokenService tokenService, TokenStore tokenStore, IS
 
         try
         {
-            var response = await httpClient.GetAsync("https://login.salesforce.com/services/oauth2/userinfo");
+            var response = await httpClient.GetAsync($"{configuration["Salesforce:RequestUrl"]}userinfo");
 
             return response.IsSuccessStatusCode;
         }

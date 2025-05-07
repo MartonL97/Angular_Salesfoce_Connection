@@ -4,7 +4,7 @@ using System.Net.Http.Headers;
 
 namespace AngularApp1.Server.Services
 {
-    public class SalesforceService(IConfiguration configuration, TokenStore tokenStore) : ISalesforceService
+    public class SalesforceService(TokenStore tokenStore) : ISalesforceService
     {
         public async  Task<string> GetSalesforceDataAsync()
         {

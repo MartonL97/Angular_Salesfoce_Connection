@@ -20,7 +20,6 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
 
     private readonly string? _salesforceClientSecret = configuration["Certificate:ServerPfx"];
     private readonly string? _salesforceCertificatePw = configuration["Certificate:Password"];
-    private readonly string? _salesforceRequestUrl = configuration["Salesforce:RequestUrl"];
 
     public async Task RetrieveAndStoreTokensAsync()
     {
@@ -72,7 +71,7 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
         try
         {
             var content = CreateJwtBearerTokenContent(jwtToken);
-            var response = await client.PostAsync(_salesforceRequestUrl, content);
+            var response = await client.PostAsync($"{configuration["Salesforce:RequestUrl"]}token", content);
             var responseString = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
