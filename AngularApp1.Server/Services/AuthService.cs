@@ -1,9 +1,7 @@
 ﻿using AngularApp1.Server.Data;
 using AngularApp1.Server.Entities;
 using AngularApp1.Server.Interfaces;
-using System.Collections.Generic;
 using System.Net.Http.Headers;
-using System.Reflection.Metadata;
 using System.Text.Json;
 
 namespace AngularApp1.Server.Services

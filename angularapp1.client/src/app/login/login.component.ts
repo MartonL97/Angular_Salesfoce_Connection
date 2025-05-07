@@ -26,15 +26,11 @@ export class LoginComponent {
         (response) => {
           console.log('Login success:', response);
 
-          // Store token in localStorage
           localStorage.setItem('authToken', response.token);
 
-          // You can also navigate or trigger further logic here
-          // Example: this.router.navigate(['/dashboard']);
         },
         (error) => {
           console.log('Login failed:', error);
-          // Show error message to user
         }
       );
   }

@@ -14,11 +14,16 @@ public class AuthController(TokenService tokenService, TokenStore tokenStore, IS
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var requestUserPassword = await salesforceAuthService.QueryUserPassword(request.SalesforceUserName);
+        if (request.SalesforceUserName != null)
+        {
+            var requestUserPassword = await salesforceAuthService.QueryUserPassword(request.SalesforceUserName);
 
-        if (requestUserPassword != request.Password)
-            return BadRequest("Unauthorized");
-
+            if (requestUserPassword != request.Password)
+                return BadRequest("Unauthorized");
+        }
+        else
+            return BadRequest("Invalid Login Request");
+        
         // Validate user credentials (this is a simplified version)
         var isValid = await IsSalesforceTokenValid(tokenStore.SalesforceAccessToken);
 
@@ -38,7 +43,6 @@ public class AuthController(TokenService tokenService, TokenStore tokenStore, IS
 
         try
         {
-            // A lightweight request that requires auth (e.g., identity endpoint)
             var response = await httpClient.GetAsync("https://login.salesforce.com/services/oauth2/userinfo");
 
             return response.IsSuccessStatusCode;
@@ -51,7 +55,7 @@ public class AuthController(TokenService tokenService, TokenStore tokenStore, IS
 
     public class LoginRequest
     {
-        public string SalesforceUserName { get; set; }
+        public string? SalesforceUserName { get; set; }
 
         public string? Password { get; set; } = null;
     }
