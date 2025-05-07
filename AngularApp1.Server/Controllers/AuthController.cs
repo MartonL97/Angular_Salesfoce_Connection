@@ -14,9 +14,9 @@ public class AuthController(TokenService tokenService, TokenStore tokenStore, IS
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var pw = await salesforceAuthService.QueryUserPassword(request.SalesforceUserName);
+        var requestUserPassword = await salesforceAuthService.QueryUserPassword(request.SalesforceUserName);
 
-        if (false)
+        if (requestUserPassword != request.Password)
             return BadRequest("Unauthorized");
 
         // Validate user credentials (this is a simplified version)

@@ -21,7 +21,7 @@ namespace AngularApp1.Server.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("AngularApp1.Server.Entities.Player", b =>
+            modelBuilder.Entity("AngularApp1.Server.Entities.PlayerCredentials", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

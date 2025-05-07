@@ -18,18 +18,23 @@ export class LoginComponent {
   onSubmit() {
     const payload = {
       SalesforceUserName: this.loginData.email,
-      JwtKey: this.loginData.password,
+      Password: this.loginData.password,
     };
 
-    this.http.post('api/Auth/login', payload)
+    this.http.post<{ token: string }>('api/Auth/login', payload)
       .subscribe(
         (response) => {
           console.log('Login success:', response);
-          // Handle success (e.g., store token, navigate, etc.)
+
+          // Store token in localStorage
+          localStorage.setItem('authToken', response.token);
+
+          // You can also navigate or trigger further logic here
+          // Example: this.router.navigate(['/dashboard']);
         },
         (error) => {
           console.log('Login failed:', error);
-          // Handle error (e.g., show message to user)
+          // Show error message to user
         }
       );
   }

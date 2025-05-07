@@ -1,7 +1,10 @@
 ﻿using AngularApp1.Server.Data;
+using AngularApp1.Server.Entities;
 using AngularApp1.Server.Interfaces;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
+using System.Reflection.Metadata;
+using System.Text.Json;
 
 namespace AngularApp1.Server.Services
 {
@@ -13,7 +16,7 @@ namespace AngularApp1.Server.Services
                 throw new Exception("Access token retrieval failed.");
 
             var response = await QueryUserPassword(tokenStore.SalesforceAccessToken, logInEmail);
-            return response;
+            return GetPassword(response);
         }
 
         private async Task<string> QueryUserPassword(string accessToken, string logInEmail)
@@ -26,6 +29,21 @@ namespace AngularApp1.Server.Services
 
             var response = await client.GetAsync(queryUrl);
             return await response.Content.ReadAsStringAsync();
+        }
+
+        private string GetPassword(string salesforceCredentialsJson)
+        {
+            var jsonDocument = JsonDocument.Parse(salesforceCredentialsJson);
+            var record = jsonDocument.RootElement.GetProperty("records")[0];
+
+
+            var credentials = new PlayerCredentials
+            {
+                Email = record.GetProperty("Email__c").GetString(),
+                Password = record.GetProperty("Password__c").GetString()
+            };
+             
+            return credentials.Password ?? string.Empty;
         }
     }
 }
