@@ -18,8 +18,8 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
     private readonly string? _salesforceUserName = configuration["Salesforce:UserName"];
     private readonly string? _salesforceUrl = configuration["Salesforce:Url"];
 
-    private readonly string? _salesforceClientSecret = configuration["Certificate:ServerPfx"];
-    private readonly string? _salesforceCertificatePw = configuration["Certificate:Password"];
+    private readonly string? _salesforceClientSecret = configuration["Login:ServerPfx"];
+    private readonly string? _salesforceCertificatePw = configuration["Login:Password"];
 
     public async Task RetrieveAndStoreTokensAsync()
     {
@@ -71,7 +71,9 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
         try
         {
             var content = CreateJwtBearerTokenContent(jwtToken);
+
             var response = await client.PostAsync($"{configuration["Salesforce:RequestUrl"]}token", content);
+
             var responseString = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
@@ -121,10 +123,14 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
 
         if (_salesforceClientSecret != null)
         {
+
+            Console.WriteLine("Client Secret: " + _salesforceClientSecret);
             var certBytes = Convert.FromBase64String(_salesforceClientSecret);
 
             var cert = new X509Certificate2(certBytes, _salesforceCertificatePw,
                 X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.MachineKeySet);
+
+            Console.WriteLine("Certificate PW: " + _salesforceCertificatePw);
 
             var privateKey = cert.GetRSAPrivateKey();
 

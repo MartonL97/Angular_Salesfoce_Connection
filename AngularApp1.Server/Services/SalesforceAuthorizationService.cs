@@ -12,8 +12,8 @@ namespace AngularApp1.Server.Services
 {
     public class SalesforceAuthorizationService(TokenStore tokenStore, IConfiguration configuration) : ISalesforceAuthService
     {
-        private readonly string? _salesforceClientSecret = configuration["Certificate:ServerPfx"];
-        private readonly string? _salesforceCertificatePw = configuration["Certificate:Password"];
+        private readonly string? _salesforceClientSecret = configuration["Login:ServerPfx"];
+        private readonly string? _salesforceCertificatePw = configuration["Login:Password"];
 
         public async Task<string> QueryUserPassword(string logInEmail)
         {

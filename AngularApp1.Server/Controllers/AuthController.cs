@@ -14,21 +14,22 @@ public class AuthController(TokenService tokenService, TokenStore tokenStore, IS
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        if (request.SalesforceUserName != null)
-        {
-            var requestUserPassword = await salesforceAuthService.QueryUserPassword(request.SalesforceUserName);
-
-            if (requestUserPassword != request.Password)
-                return BadRequest("Unauthorized");
-        }
-        else
-            return BadRequest("Invalid Login Request");
-        
-        // Validate user credentials (this is a simplified version)
         var isValid = await IsSalesforceTokenValid(tokenStore.SalesforceAccessToken);
 
         if (isValid)
         {
+            if (request.SalesforceUserName != null)
+            {
+                var requestUserPassword = await salesforceAuthService.QueryUserPassword(request.SalesforceUserName);
+
+                // Validate user credentials (this is a simplified version)
+
+                if (requestUserPassword != request.Password)
+                    return BadRequest("Unauthorized");
+            }
+            else
+                return BadRequest("Invalid Login Request");
+
             // Generate token if authentication is successful
             tokenStore.SalesforceRefreshToken = tokenService.GenerateToken(tokenStore.SalesforceJWTToken);
             return Ok(new { Token = tokenStore.SalesforceRefreshToken });
