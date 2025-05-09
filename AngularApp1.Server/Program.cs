@@ -32,8 +32,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
+            ValidateIssuer = true,
+            ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
     });
@@ -43,14 +47,6 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 builder.Configuration.AddEnvironmentVariables();
-
-
-var allVariables = builder.Configuration.AsEnumerable();
-foreach (var variable in allVariables)
-{
-    Console.WriteLine($"{variable.Key}: {variable.Value}");
-}
-
 
 // Ensure the tokens are retrieved and stored on application startup
 var tokenService = app.Services.GetRequiredService<TokenService>();

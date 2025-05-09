@@ -124,14 +124,10 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
         if (_salesforceClientSecret != null)
         {
 
-            Console.WriteLine("Client Secret: " + _salesforceClientSecret);
             var certBytes = Convert.FromBase64String(_salesforceClientSecret);
 
             var cert = new X509Certificate2(certBytes, _salesforceCertificatePw,
                 X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.MachineKeySet);
-
-            Console.WriteLine("Certificate PW: " + _salesforceCertificatePw);
-
             var privateKey = cert.GetRSAPrivateKey();
 
             // Sign the JWT Header + "." + JWT Claims Object
