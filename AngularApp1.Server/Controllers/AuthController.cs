@@ -1,8 +1,9 @@
-﻿using System.Net.Http.Headers;
-using AngularApp1.Server.Data;
+﻿using AngularApp1.Server.Data;
 using AngularApp1.Server.Interfaces;
 using AngularApp1.Server.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Headers;
+using System.Security.Cryptography;
 
 namespace AngularApp1.Server.Controllers;
 
@@ -20,12 +21,20 @@ public class AuthController(TokenService tokenService, TokenStore tokenStore, IS
         {
             if (request.SalesforceUserName != null)
             {
-                var requestUserPassword = await salesforceAuthService.QueryUserPassword(request.SalesforceUserName);
+                var credentials = await salesforceAuthService.QueryUserPassword(request.SalesforceUserName);
 
                 // Validate user credentials (this is a simplified version)
 
-                if (requestUserPassword != request.Password)
-                    return BadRequest("Unauthorized");
+                if (request.Password != null)
+                {
+                    if (credentials.Salt != null)
+                    {
+                        var hashedPassword = HashWithPbkdf2(request.Password, credentials.Salt);
+
+                        if (credentials.PasswordHash != null && !SecureEquals(credentials.PasswordHash, hashedPassword))
+                            return BadRequest("Unauthorized");
+                    }
+                }
             }
             else
                 return BadRequest("Invalid Login Request");
@@ -53,6 +62,25 @@ public class AuthController(TokenService tokenService, TokenStore tokenStore, IS
             return false;
         }
     }
+
+    private string HashWithPbkdf2(string password, string salt)
+    {
+        using var pbkdf2 = new Rfc2898DeriveBytes(password, Convert.FromBase64String(salt), 100_000, HashAlgorithmName.SHA256);
+        var hash = pbkdf2.GetBytes(32); // 256-bit hash
+        return Convert.ToBase64String(hash);
+    }
+
+    private bool SecureEquals(string a, string b)
+    {
+        if (a.Length != b.Length) return false;
+
+        var result = 0;
+        for (var i = 0; i < a.Length; i++)
+            result |= a[i] ^ b[i];
+
+        return result == 0;
+    }
+
 
     public class LoginRequest
     {

@@ -38,13 +38,30 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? string.Empty))
         };
     });
 
 builder.Services.AddAuthorization();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowDevClient", policy =>
+    {
+        policy.WithOrigins("https://r10sitestingenv.online", "https://localhost:56519")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+// Add services to the container.
+builder.Services.AddControllers();
+
 var app = builder.Build();
+
+app.UseCors("AllowDevClient");  // Apply the custom CORS policy here
+app.UseHttpsRedirection();
+
 
 builder.Configuration.AddEnvironmentVariables();
 
