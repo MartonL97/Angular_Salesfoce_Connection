@@ -19,8 +19,8 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
     private readonly string? _salesforceUserName = configuration["Salesforce:UserName"];
     private readonly string? _salesforceUrl = configuration["Salesforce:Url"];
 
-    private readonly string? _salesforceClientSecret = configuration["Login:ServerPfx"];
-    private readonly string? _salesforceCertificatePw = configuration["Login:Password"];
+    private readonly string? _salesforceClientSecret = configuration["LoginProd:ServerPfx"];
+    private readonly string? _salesforceCertificatePw = configuration["LoginProd:Password"];
 
     public async Task RetrieveAndStoreTokensAsync()
     {
