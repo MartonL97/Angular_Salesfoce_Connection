@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddEnvironmentVariables();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews(); // Use MVC with views
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -67,9 +69,6 @@ var app = builder.Build();
 
 app.UseCors("AllowDevClient");  // Apply the custom CORS policy here
 app.UseHttpsRedirection();
-
-
-builder.Configuration.AddEnvironmentVariables();
 
 // Ensure the tokens are retrieved and stored on application startup
 var tokenService = app.Services.GetRequiredService<TokenService>();
