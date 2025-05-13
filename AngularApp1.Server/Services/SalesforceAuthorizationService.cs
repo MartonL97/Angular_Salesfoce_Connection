@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace AngularApp1.Server.Services
 {
-    public class SalesforceAuthorizationService(TokenStore tokenStore, IConfiguration configuration) : ISalesforceAuthService
+    public class SalesforceAuthorizationService(TokenStore tokenStore) : ISalesforceAuthService
     {
         public async Task<ProfileCredentials> QueryUserPassword(string logInEmail)
         {
