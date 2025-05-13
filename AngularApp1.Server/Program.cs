@@ -42,6 +42,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("PlayerOnly", policy => policy.RequireRole("Player"));
+    options.AddPolicy("CoachOnly", policy => policy.RequireRole("Coach"));
+});
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddCors(options =>

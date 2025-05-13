@@ -4,6 +4,6 @@ namespace AngularApp1.Server.Interfaces
 {
     public interface ISalesforceAuthService
     {
-        Task<PlayerCredentials> QueryUserPassword(string logInEmail);
+        Task<ProfileCredentials> QueryUserPassword(string logInEmail);
     }
 }

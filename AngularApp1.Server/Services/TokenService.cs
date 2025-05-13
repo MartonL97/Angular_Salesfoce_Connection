@@ -1,4 +1,5 @@
 ﻿using AngularApp1.Server.Data;
+using AngularApp1.Server.Entities;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
@@ -18,8 +19,8 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
     private readonly string? _salesforceUserName = configuration["Salesforce:UserName"];
     private readonly string? _salesforceUrl = configuration["Salesforce:Url"];
 
-    private readonly string? _salesforceClientSecret = configuration["Login:ServerPfx"];
-    private readonly string? _salesforceCertificatePw = configuration["Login:Password"];
+    private readonly string? _salesforceClientSecret = configuration["LoginNew:ServerPfx"];
+    private readonly string? _salesforceCertificatePw = configuration["LoginNew:Password"];
 
     public async Task RetrieveAndStoreTokensAsync()
     {
@@ -37,12 +38,13 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
         tokenStore.SalesforceAccessToken = accessToken;
     }
 
-    public string GenerateToken(string username)
+    public string GenerateToken(string username, ProfileType role)
     {
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, username),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.Role, role.ToString()) // Convert the enum to string for the role claim
         };
 
         if (_secretKey != null)
@@ -63,6 +65,7 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
 
         return string.Empty;
     }
+
 
     private async Task<string?> GetSalesforceAccessTokenAsync(string jwtToken)
     {
@@ -123,7 +126,6 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
 
         if (_salesforceClientSecret != null)
         {
-
             var certBytes = Convert.FromBase64String(_salesforceClientSecret);
 
             var cert = new X509Certificate2(certBytes, _salesforceCertificatePw,

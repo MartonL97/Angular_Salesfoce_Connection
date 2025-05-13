@@ -7,7 +7,7 @@ namespace AngularApp1.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize]
+    [Authorize(Policy = "PlayerOnly")]
     public class SalesforceController(ISalesforceService salesforceService) : ControllerBase
     {
         [HttpGet("store")]

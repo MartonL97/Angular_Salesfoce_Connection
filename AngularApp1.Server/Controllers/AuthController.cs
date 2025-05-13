@@ -35,13 +35,14 @@ public class AuthController(TokenService tokenService, TokenStore tokenStore, IS
                             return BadRequest("Unauthorized");
                     }
                 }
+
+                // Generate token if authentication is successful
+                tokenStore.SalesforceRefreshToken = tokenService.GenerateToken(credentials.Email, credentials.ProfileType);
+                return Ok(new { Token = tokenStore.SalesforceRefreshToken });
             }
             else
                 return BadRequest("Invalid Login Request");
 
-            // Generate token if authentication is successful
-            tokenStore.SalesforceRefreshToken = tokenService.GenerateToken(tokenStore.SalesforceJWTToken);
-            return Ok(new { Token = tokenStore.SalesforceRefreshToken });
         }
         return Unauthorized("Invalid Salesforce token");
     }
