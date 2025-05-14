@@ -7,12 +7,14 @@ import { AppComponent } from './app.component';
 
 import { FormsModule } from '@angular/forms';
 import { LoginComponent } from './login/login.component';
+import { SuccessPageComponent } from './success-page/success-page.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent
+    LoginComponent,
+    SuccessPageComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,

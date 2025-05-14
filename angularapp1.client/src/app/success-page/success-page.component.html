@@ -1,0 +1,45 @@
+<div class="profile-banner">
+  <div class="left-section">
+    <h1>{{ playerData?.Name?.toUpperCase() }}</h1>
+    <p>{{ playerData?.Position }}</p>
+    <div class="bio">
+      <p>Age: {{ playerData?.Age }}</p>
+      <p>Gender: {{ playerData?.Gender }}</p>
+      <div class="team-badge">
+        <img src="Assets/team-badge.png" alt="Team Badge" />
+        <span>{{ playerData?.Team }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="center-section">
+    <img class="player-img" src="assets/player-placeholder.png" alt="{{ playerData?.Name }}" />
+  </div>
+
+  <div class="right-section">
+    <div class="stat">
+      <span class="label">Height</span>
+      <span class="value">{{ playerData?.Height }}cm</span>
+    </div>
+    <div class="stat">
+      <span class="label">Weight</span>
+      <span class="value">{{ playerData?.Weight }}kg</span>
+    </div>
+    <div class="stat">
+      <span class="label">Games</span>
+      <span class="value">{{ playerData?.GamesPlayed }}</span>
+    </div>
+    <div class="stat">
+      <span class="label">Points</span>
+      <span class="value">{{ playerData?.PointsScored }}</span>
+    </div>
+    <div class="stat">
+      <span class="label">Tries</span>
+      <span class="value">{{ playerData?.TriesScored }}</span>
+    </div>
+  </div>
+</div>
+
+<div class="logout-container">
+  <button (click)="onLogout()">Logout</button>
+</div>

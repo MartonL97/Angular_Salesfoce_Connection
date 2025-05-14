@@ -10,8 +10,8 @@ namespace AngularApp1.Server.Controllers
     [Authorize(Policy = "PlayerOnly")]
     public class SalesforceController(ISalesforceService salesforceService) : ControllerBase
     {
-        [HttpGet("store")]
-        public async Task<IActionResult> GetStore()
+        [HttpGet("player")]
+        public async Task<IActionResult> GetPlayer()
         {
             try
             {

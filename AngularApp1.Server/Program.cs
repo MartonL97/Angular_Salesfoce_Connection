@@ -56,7 +56,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowDevClient", policy =>
     {
-        policy.WithOrigins("https://r10sitestingenv.online", "https://localhost:56519")
+        policy.WithOrigins("https://r10sitestingenv.online", "https://localhost:56519", "http://localhost:5282")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });

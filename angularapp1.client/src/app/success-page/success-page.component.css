@@ -1,0 +1,103 @@
+/* Main banner section */
+.profile-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: radial-gradient(circle at center, #70001e, #240044);
+  color: white;
+  padding: 40px;
+  border-radius: 16px;
+  font-family: 'Arial Black', sans-serif;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+/* Left info section */
+.left-section {
+  flex: 1;
+  min-width: 250px;
+}
+
+  .left-section h1 {
+    font-size: 32px;
+    margin: 0;
+  }
+
+  .left-section p {
+    font-size: 16px;
+    margin: 4px 0;
+  }
+
+.bio {
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.team-badge {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+  .team-badge img {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+  }
+
+/* Center image section */
+.center-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  min-width: 200px;
+}
+
+.player-img {
+  max-height: 220px;
+  object-fit: contain;
+}
+
+/* Right stats section */
+.right-section {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 16px;
+  justify-content: end;
+  text-align: right;
+  min-width: 250px;
+}
+
+.stat .label {
+  font-size: 12px;
+  color: #ccc;
+  display: block;
+}
+
+.stat .value {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+}
+
+/* Logout button centered below */
+.logout-container {
+  margin-top: 40px;
+  text-align: center;
+}
+
+  .logout-container button {
+    padding: 12px 24px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+    .logout-container button:hover {
+      background-color: #0056b3;
+    }

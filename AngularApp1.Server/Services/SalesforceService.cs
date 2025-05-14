@@ -20,7 +20,7 @@ namespace AngularApp1.Server.Services
             var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-            var soql = "SELECT FIELDS(All) FROM Store__c ORDER BY Name LIMIT 1";
+            var soql = "SELECT FIELDS(All) FROM Player__c ORDER BY Name LIMIT 1";
             var queryUrl = $"{tokenStore.SalesforceInstanceUrl}/services/data/v60.0/query?q={Uri.EscapeDataString(soql)}";
 
             var response = await client.GetAsync(queryUrl);

@@ -124,8 +124,6 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
         var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
         store.Open(OpenFlags.ReadOnly);
 
-        Console.WriteLine(_salesforceClientSecret);
-
         if (_salesforceClientSecret != null)
         {
             var certBytes = Convert.FromBase64String(_salesforceClientSecret);

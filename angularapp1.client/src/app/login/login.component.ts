@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router'
+import { AuthService } from '../services/auth.service'; // Adjust path as needed
+
 
 @Component({
   selector: 'app-login',
@@ -13,7 +16,7 @@ export class LoginComponent {
     password: '',
   };
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router, private authService: AuthService) { }
 
   onSubmit() {
     const payload = {
@@ -21,27 +24,18 @@ export class LoginComponent {
       Password: this.loginData.password,
     };
 
-    this.http.post<{ token: string }>('/api/Auth/login', payload)
+    this.http.post<{ token: string }>('http://localhost:5282/api/Auth/login', payload)
       .subscribe(
         (response) => {
           console.log('Login success:', response);
+          this.router.navigate(['/success']);
 
           const token = response.token;
-          localStorage.setItem('authToken', token);
+          this.authService.saveToken(token);
 
           const headers = new HttpHeaders({
             'Authorization': `Bearer ${token}`
           });
-
-          this.http.get('/Salesforce/store', { headers })
-            .subscribe(
-              (storeResponse) => {
-                console.log('Store response:', storeResponse);
-              },
-              (storeError) => {
-                console.error('Error calling store API:', storeError);
-              }
-            );
         },
         (error) => {
           console.error('Login failed:', error);
