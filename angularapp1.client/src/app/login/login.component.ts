@@ -27,7 +27,7 @@ export class LoginComponent {
     this.http.post<{ token: string }>('/api/Auth/login', payload)
       .subscribe(
         (response) => {
-          console.log('Login success:', response);
+          console.log('Login success');
           this.router.navigate(['/success']);
 
           const token = response.token;

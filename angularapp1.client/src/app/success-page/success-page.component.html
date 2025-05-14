@@ -1,41 +1,41 @@
 <div class="profile-banner">
   <div class="left-section">
     <h1>{{ playerData?.Name?.toUpperCase() }}</h1>
-    <p>{{ playerData?.Position }}</p>
+    <p>{{ playerData?.Position__c }}</p>
     <div class="bio">
-      <p>Age: {{ playerData?.Age }}</p>
-      <p>Gender: {{ playerData?.Gender }}</p>
+      <p>Age: {{ playerData?.Age__c }}</p>
+      <p>Gender: {{ playerData?.Gender__c }}</p>
       <div class="team-badge">
-        <img src="Assets/team-badge.png" alt="Team Badge" />
-        <span>{{ playerData?.Team }}</span>
+        <img src="team-badge.png" alt="Team Badge"/>
+        <span>{{ playerData?.Team__c }}</span>
       </div>
     </div>
   </div>
 
   <div class="center-section">
-    <img class="player-img" src="assets/player-placeholder.png" alt="{{ playerData?.Name }}" />
+    <img class="player-img" src="player-placeholder.png"/>
   </div>
 
   <div class="right-section">
     <div class="stat">
       <span class="label">Height</span>
-      <span class="value">{{ playerData?.Height }}cm</span>
+      <span class="value">{{ playerData?.Height__c }}cm</span>
     </div>
     <div class="stat">
       <span class="label">Weight</span>
-      <span class="value">{{ playerData?.Weight }}kg</span>
+      <span class="value">{{ playerData?.Weight__c }}kg</span>
     </div>
     <div class="stat">
       <span class="label">Games</span>
-      <span class="value">{{ playerData?.GamesPlayed }}</span>
+      <span class="value">{{ playerData?.GamesPlayed__c }}</span>
     </div>
     <div class="stat">
       <span class="label">Points</span>
-      <span class="value">{{ playerData?.PointsScored }}</span>
+      <span class="value">{{ playerData?.PointsScored__c }}</span>
     </div>
     <div class="stat">
       <span class="label">Tries</span>
-      <span class="value">{{ playerData?.TriesScored }}</span>
+      <span class="value">{{ playerData?.TriesScored__c }}</span>
     </div>
   </div>
 </div>

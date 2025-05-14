@@ -30,8 +30,8 @@ export class SuccessPageComponent implements OnInit {
       this.http.get('/Salesforce/player', { headers })
         .subscribe(
           (response: any) => {
-            console.log('Store response:', response);
-            this.playerData = response; // Assign response to playerData
+            this.playerData = response.records[0]; // Assign response to playerData
+            console.log('Player response succesfull:', this.playerData?.Name);
           },
           (error) => {
             console.error('Error calling store API:', error);
@@ -47,4 +47,6 @@ export class SuccessPageComponent implements OnInit {
     this.authService.removeToken(); // ✅ Use AuthService
     this.router.navigate(['/login']);
   }
+
+
 }
