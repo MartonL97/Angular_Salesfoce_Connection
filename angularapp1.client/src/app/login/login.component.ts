@@ -24,7 +24,7 @@ export class LoginComponent {
       Password: this.loginData.password,
     };
 
-    this.http.post<{ token: string }>('http://localhost:5282/api/Auth/login', payload)
+    this.http.post<{ token: string }>('/api/Auth/login', payload)
       .subscribe(
         (response) => {
           console.log('Login success:', response);

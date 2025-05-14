@@ -27,7 +27,7 @@ export class SuccessPageComponent implements OnInit {
         'Authorization': `Bearer ${token}`
       });
 
-      this.http.get('http://localhost:5282/Salesforce/player', { headers })
+      this.http.get('/Salesforce/player', { headers })
         .subscribe(
           (response: any) => {
             console.log('Store response:', response);
