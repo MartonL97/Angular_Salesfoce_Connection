@@ -15,36 +15,37 @@ public class AuthController(TokenService tokenService, TokenStore tokenStore, IS
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
+        await tokenService.RetrieveAndStoreTokensAsync();
+
         var isValid = await IsSalesforceTokenValid(tokenStore.SalesforceAccessToken);
 
-        if (isValid)
+        if (!isValid)
+            return Unauthorized("Invalid Salesforce token");
+
+        if (request.SalesforceUserName != null)
         {
-            if (request.SalesforceUserName != null)
+            var credentials = await salesforceAuthService.QueryUserPassword(request.SalesforceUserName);
+
+            // Validate user credentials (this is a simplified version)
+
+            if (request.Password != null)
             {
-                var credentials = await salesforceAuthService.QueryUserPassword(request.SalesforceUserName);
-
-                // Validate user credentials (this is a simplified version)
-
-                if (request.Password != null)
+                if (credentials.Salt != null)
                 {
-                    if (credentials.Salt != null)
-                    {
-                        var hashedPassword = HashWithPbkdf2(request.Password, credentials.Salt);
+                    var hashedPassword = HashWithPbkdf2(request.Password, credentials.Salt);
 
-                        if (credentials.PasswordHash != null && !SecureEquals(credentials.PasswordHash, hashedPassword))
-                            return BadRequest("Unauthorized");
-                    }
+                    if (credentials.PasswordHash != null && !SecureEquals(credentials.PasswordHash, hashedPassword))
+                        return BadRequest("Unauthorized");
                 }
-
-                // Generate token if authentication is successful
-                tokenStore.SalesforceRefreshToken = tokenService.GenerateToken(credentials.Email, credentials.ProfileType);
-                return Ok(new { Token = tokenStore.SalesforceRefreshToken });
             }
-            else
-                return BadRequest("Invalid Login Request");
 
+            // Generate token if authentication is successful
+            tokenStore.SalesforceRefreshToken = tokenService.GenerateToken(credentials.Email, credentials.ProfileType);
+            return Ok(new { Token = tokenStore.SalesforceRefreshToken });
         }
-        return Unauthorized("Invalid Salesforce token");
+        else
+            return BadRequest("Invalid Login Request");
+
     }
 
     private async Task<bool> IsSalesforceTokenValid(string token)

@@ -71,10 +71,6 @@ var app = builder.Build();
 app.UseCors("AllowDevClient");  // Apply the custom CORS policy here
 app.UseHttpsRedirection();
 
-// Ensure the tokens are retrieved and stored on application startup
-var tokenService = app.Services.GetRequiredService<TokenService>();
-await tokenService.RetrieveAndStoreTokensAsync();
-
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
