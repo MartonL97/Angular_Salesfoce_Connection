@@ -15,11 +15,11 @@ public class AuthController(TokenService tokenService, TokenStore tokenStore, IS
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var _salesforceCertificatePath = configuration["Pfx"];
+        var salesforceClaims = new SalesforceJwtClaimOptions(configuration);
 
         try
         {
-            await tokenService.RetrieveAndStoreTokensAsync(_salesforceCertificatePath);
+            await tokenService.RetrieveAndStoreTokensAsync(salesforceClaims);
 
             var isValid = await IsSalesforceTokenValid(tokenStore.SalesforceAccessToken);
 
@@ -29,8 +29,6 @@ public class AuthController(TokenService tokenService, TokenStore tokenStore, IS
             if (request.SalesforceUserName != null)
             {
                 var credentials = await salesforceAuthService.QueryUserPassword(request.SalesforceUserName);
-
-                // Validate user credentials (this is a simplified version)
 
                 if (request.Password != null)
                 {
@@ -42,17 +40,17 @@ public class AuthController(TokenService tokenService, TokenStore tokenStore, IS
                             return BadRequest("Unauthorized");
                     }
                 }
-
-                // Generate token if authentication is successful
-                tokenStore.SalesforceRefreshToken = tokenService.GenerateToken(credentials.Email, credentials.ProfileType);
+                
+                if (credentials.Email != null)
+                    tokenStore.SalesforceRefreshToken = tokenService.GenerateToken(credentials.Email, credentials.ProfileType, salesforceClaims.JwtKey);
                 return Ok(new { Token = tokenStore.SalesforceRefreshToken });
             }
-            else
-                return BadRequest("Invalid Login Request");
+
+            return BadRequest("Invalid Login Request");
         }
         catch(Exception exception)
         {
-            return BadRequest($"Secret is: {_salesforceCertificatePath} with error: {exception.Message}");
+            return NotFound($"Failed to login in with error: {exception.Message}");
         }
     }
 
@@ -76,7 +74,7 @@ public class AuthController(TokenService tokenService, TokenStore tokenStore, IS
     private string HashWithPbkdf2(string password, string salt)
     {
         using var pbkdf2 = new Rfc2898DeriveBytes(password, Convert.FromBase64String(salt), 100_000, HashAlgorithmName.SHA256);
-        var hash = pbkdf2.GetBytes(32); // 256-bit hash
+        var hash = pbkdf2.GetBytes(32);
         return Convert.ToBase64String(hash);
     }
 

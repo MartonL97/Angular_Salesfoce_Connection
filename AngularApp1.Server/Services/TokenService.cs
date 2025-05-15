@@ -12,35 +12,31 @@ namespace AngularApp1.Server.Services;
 
 public class TokenService(IConfiguration configuration, TokenStore tokenStore)
 {
-    private readonly string? _secretKey = configuration["Jwt:Key"];
     private readonly string? _issuer = configuration["Jwt:Issuer"];
     private readonly string? _audience = configuration["Jwt:Audience"];
     private readonly string? _salesforceClientId = configuration["Salesforce:ClientId"];
-    private readonly string? _salesforceUserName = configuration["Salesforce:UserName"];
     private readonly string? _salesforceUrl = configuration["Salesforce:Url"];
 
-    private readonly string? _salesforceClientSecret = configuration["Pfx"];
-    private readonly string? _salesforceCertificatePw = configuration["Login:Password"];
-
-    private readonly string? _salesforceCertificatePath = configuration["Pfx"];
-
-    public async Task RetrieveAndStoreTokensAsync(string salesforceClientSecret)
+    public async Task RetrieveAndStoreTokensAsync(SalesforceJwtClaimOptions salesforceJwtClaimOptions)
     {
         // Retrieve the JWT token
-        var jwtToken = GetJwtToken(salesforceClientSecret);
+        if (salesforceJwtClaimOptions.CertificateIdPrefix != null)
+        {
+            var jwtToken = GetJwtToken(salesforceJwtClaimOptions.SalesForceUserName, salesforceJwtClaimOptions.CertificateIdPrefix, salesforceJwtClaimOptions.SecretKey);
 
-        // Retrieve the access token using the JWT token
-        var accessToken = await GetSalesforceAccessTokenAsync(jwtToken);
+            // Retrieve the access token using the JWT token
+            var accessToken = await GetSalesforceAccessTokenAsync(jwtToken);
 
-        if (string.IsNullOrEmpty(accessToken))
-            throw new Exception("Access token retrieval failed.");
+            if (string.IsNullOrEmpty(accessToken))
+                throw new Exception("Access token retrieval failed.");
 
-        // Store the tokens in TokenStore
-        tokenStore.SalesforceJWTToken = jwtToken;
-        tokenStore.SalesforceAccessToken = accessToken;
+            // Store the tokens in TokenStore
+            tokenStore.SalesforceJWTToken = jwtToken;
+            tokenStore.SalesforceAccessToken = accessToken;
+        }
     }
 
-    public string GenerateToken(string username, ProfileType role)
+    public string GenerateToken(string username, ProfileType role, string? secretKey)
     {
         var claims = new[]
         {
@@ -49,9 +45,9 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
             new Claim(ClaimTypes.Role, role.ToString()) // Convert the enum to string for the role claim
         };
 
-        if (_secretKey != null)
+        if (secretKey != null)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
@@ -102,7 +98,7 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
 
     }
 
-    private string GetJwtToken(string salesforceClientSecret)
+    private string GetJwtToken(string? salesforceUserName, string? salesforceClientSecret, string? salesforceCertificatePw)
     {
         const string header = "{\"alg\":\"RS256\"}";
         const string claimTemplate = "{{\"iss\": \"{0}\", \"sub\": \"{1}\", \"aud\": \"{2}\", \"exp\": \"{3}\", \"jti\": \"{4}\"}}";
@@ -115,7 +111,7 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
         // Create the JWT Claims Object
         var claimArray = new object?[5];
         claimArray[0] = _salesforceClientId ?? string.Empty;
-        claimArray[1] = _salesforceUserName ?? string.Empty;
+        claimArray[1] = salesforceUserName ?? string.Empty;
         claimArray[2] = _salesforceUrl ?? string.Empty;
         claimArray[3] = (DateTimeOffset.UtcNow.ToUnixTimeSeconds() + 300).ToString();
         claimArray[4] = Guid.NewGuid().ToString();
@@ -130,7 +126,7 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
         {
             var certBytes = Convert.FromBase64String(salesforceClientSecret);
 
-            var cert = new X509Certificate2(certBytes, _salesforceCertificatePw,
+            var cert = new X509Certificate2(certBytes, salesforceCertificatePw,
                 X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.MachineKeySet);
             var privateKey = cert.GetRSAPrivateKey();
 
