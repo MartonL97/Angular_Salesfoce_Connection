@@ -2,7 +2,6 @@
 {
     public class SalesforceJwtClaimOptions(IConfiguration configuration)
     {
-        // JWT related properties
         public string? JwtKey { get; set; } = configuration["JwtKey"];
 
         // Salesforce specific claims
