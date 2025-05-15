@@ -24,10 +24,10 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
 
     private readonly string? _salesforceCertificatePath = configuration["Pfx"];
 
-    public async Task RetrieveAndStoreTokensAsync()
+    public async Task RetrieveAndStoreTokensAsync(string salesforceClientSecret)
     {
         // Retrieve the JWT token
-        var jwtToken = GetJwtToken();
+        var jwtToken = GetJwtToken(salesforceClientSecret);
 
         // Retrieve the access token using the JWT token
         var accessToken = await GetSalesforceAccessTokenAsync(jwtToken);
@@ -102,7 +102,7 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
 
     }
 
-    private string GetJwtToken()
+    private string GetJwtToken(string salesforceClientSecret)
     {
         const string header = "{\"alg\":\"RS256\"}";
         const string claimTemplate = "{{\"iss\": \"{0}\", \"sub\": \"{1}\", \"aud\": \"{2}\", \"exp\": \"{3}\", \"jti\": \"{4}\"}}";
@@ -126,9 +126,9 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
         var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
         store.Open(OpenFlags.ReadOnly);
 
-        if (_salesforceClientSecret != null)
+        if (salesforceClientSecret != null)
         {
-            var certBytes = Convert.FromBase64String(_salesforceClientSecret);
+            var certBytes = Convert.FromBase64String(salesforceClientSecret);
 
             var cert = new X509Certificate2(certBytes, _salesforceCertificatePw,
                 X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.MachineKeySet);

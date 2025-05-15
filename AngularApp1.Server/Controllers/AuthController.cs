@@ -2,6 +2,7 @@
 using AngularApp1.Server.Interfaces;
 using AngularApp1.Server.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 
@@ -15,37 +16,45 @@ public class AuthController(TokenService tokenService, TokenStore tokenStore, IS
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        await tokenService.RetrieveAndStoreTokensAsync();
+        var _salesforceCertificatePath = configuration["Pfx"];
 
-        var isValid = await IsSalesforceTokenValid(tokenStore.SalesforceAccessToken);
-
-        if (!isValid)
-            return Unauthorized("Invalid Salesforce token");
-
-        if (request.SalesforceUserName != null)
+        try
         {
-            var credentials = await salesforceAuthService.QueryUserPassword(request.SalesforceUserName);
+            await tokenService.RetrieveAndStoreTokensAsync(_salesforceCertificatePath);
 
-            // Validate user credentials (this is a simplified version)
+            var isValid = await IsSalesforceTokenValid(tokenStore.SalesforceAccessToken);
 
-            if (request.Password != null)
+            if (!isValid)
+                return Unauthorized("Invalid Salesforce token");
+
+            if (request.SalesforceUserName != null)
             {
-                if (credentials.Salt != null)
+                var credentials = await salesforceAuthService.QueryUserPassword(request.SalesforceUserName);
+
+                // Validate user credentials (this is a simplified version)
+
+                if (request.Password != null)
                 {
-                    var hashedPassword = HashWithPbkdf2(request.Password, credentials.Salt);
+                    if (credentials.Salt != null)
+                    {
+                        var hashedPassword = HashWithPbkdf2(request.Password, credentials.Salt);
 
-                    if (credentials.PasswordHash != null && !SecureEquals(credentials.PasswordHash, hashedPassword))
-                        return BadRequest("Unauthorized");
+                        if (credentials.PasswordHash != null && !SecureEquals(credentials.PasswordHash, hashedPassword))
+                            return BadRequest("Unauthorized");
+                    }
                 }
+
+                // Generate token if authentication is successful
+                tokenStore.SalesforceRefreshToken = tokenService.GenerateToken(credentials.Email, credentials.ProfileType);
+                return Ok(new { Token = tokenStore.SalesforceRefreshToken });
             }
-
-            // Generate token if authentication is successful
-            tokenStore.SalesforceRefreshToken = tokenService.GenerateToken(credentials.Email, credentials.ProfileType);
-            return Ok(new { Token = tokenStore.SalesforceRefreshToken });
+            else
+                return BadRequest("Invalid Login Request");
         }
-        else
-            return BadRequest("Invalid Login Request");
-
+        catch
+        {
+            return BadRequest($"Secret is null {_salesforceCertificatePath}");
+        }
     }
 
     private async Task<bool> IsSalesforceTokenValid(string token)
