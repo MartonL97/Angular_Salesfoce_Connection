@@ -13,7 +13,7 @@ namespace AngularApp1.Server.Controllers
         [HttpGet(Name = "GetLogInSettings")]
         public IActionResult Get()
         {
-            var _salesforceCertificatePath = configuration["My:Hierarchical:Config:Data"];
+            var _salesforceCertificatePath = configuration["Pfx"];
 
             var configDictionary = new Dictionary<string, string>();
             foreach (var kvp in configuration.AsEnumerable())

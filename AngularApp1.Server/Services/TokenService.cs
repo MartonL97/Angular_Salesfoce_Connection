@@ -22,7 +22,7 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
     private readonly string? _salesforceClientSecret = configuration["Login:ServerPfx"];
     private readonly string? _salesforceCertificatePw = configuration["Login:Password"];
 
-    private readonly string? _salesforceCertificatePath = configuration["My:Hierarchical:Config:Data"];
+    private readonly string? _salesforceCertificatePath = configuration["Pfx"];
 
     public async Task RetrieveAndStoreTokensAsync()
     {
