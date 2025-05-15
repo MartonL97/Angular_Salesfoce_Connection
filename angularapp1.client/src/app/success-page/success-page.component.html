@@ -1,7 +1,7 @@
 <div class="profile-banner">
   <div class="left-section">
     <h1>{{ playerData?.Name?.toUpperCase() }}</h1>
-    <p>{{ playerData?.Position__c }}</p>
+    <p>Position: {{ playerData?.Position__c }}</p>
     <div class="bio">
       <p>Age: {{ playerData?.Age__c }}</p>
       <p>Gender: {{ playerData?.Gender__c }}</p>
@@ -32,10 +32,6 @@
     <div class="stat">
       <span class="label">Points</span>
       <span class="value">{{ playerData?.PointsScored__c }}</span>
-    </div>
-    <div class="stat">
-      <span class="label">Tries</span>
-      <span class="value">{{ playerData?.TriesScored__c }}</span>
     </div>
   </div>
 </div>

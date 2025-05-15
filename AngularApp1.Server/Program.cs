@@ -8,7 +8,14 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddEnvironmentVariables();
+if (builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddUserSecrets<Program>();
+}
+else if (builder.Environment.IsProduction())
+{
+    builder.Configuration.AddEnvironmentVariables();
+}
 
 // Add services to the container.
 builder.Services.AddControllersWithViews(); // Use MVC with views
