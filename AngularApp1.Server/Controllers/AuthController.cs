@@ -51,9 +51,9 @@ public class AuthController(TokenService tokenService, TokenStore tokenStore, IS
             else
                 return BadRequest("Invalid Login Request");
         }
-        catch
+        catch(Exception exception)
         {
-            return BadRequest($"Secret is null {_salesforceCertificatePath}");
+            return BadRequest($"Secret is: {_salesforceCertificatePath} with error: {exception.Message}");
         }
     }
 
