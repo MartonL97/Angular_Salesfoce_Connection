@@ -8,13 +8,26 @@ namespace AngularApp1.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UserController : ControllerBase
+    public class UserController(IConfiguration configuration) : ControllerBase
     {
         [HttpGet(Name = "GetLogInSettings")]
         public IActionResult Get()
         {
-            var response = new { message = "hello" }; // return an object with a property
-            return Ok(response);  // This returns an object as JSON
+            var _salesforceCertificatePath = configuration["My:Hierarchical:Config:Data"];
+
+            var configDictionary = new Dictionary<string, string>();
+            foreach (var kvp in configuration.AsEnumerable())
+            {
+                configDictionary[kvp.Key] = kvp.Value ?? "";
+            }
+
+            var response = new
+            {
+                SalesforceCertificatePath = _salesforceCertificatePath,
+                Configuration = configDictionary
+            };
+
+            return Ok(response); // Returns structured JSON
         }
     }
 
