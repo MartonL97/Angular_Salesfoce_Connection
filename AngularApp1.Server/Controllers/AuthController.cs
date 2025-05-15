@@ -2,7 +2,6 @@
 using AngularApp1.Server.Interfaces;
 using AngularApp1.Server.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 
