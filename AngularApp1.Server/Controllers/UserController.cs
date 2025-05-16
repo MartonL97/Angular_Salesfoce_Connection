@@ -2,15 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AngularApp1.Server.Controllers
 {
+    //Just for debugging in Azure
     [ApiController]
     [Route("[controller]")]
     public class UserController(IConfiguration configuration) : ControllerBase
     {
-        [HttpGet(Name = "GetLogInSettings")]
         public IActionResult Get()
         {
-            var _salesforceCertificatePath = configuration["Pfx"];
-
             var configDictionary = new Dictionary<string, string>();
             foreach (var kvp in configuration.AsEnumerable())
             {
@@ -19,11 +17,10 @@ namespace AngularApp1.Server.Controllers
 
             var response = new
             {
-                SalesforceCertificatePath = _salesforceCertificatePath,
                 Configuration = configDictionary
             };
 
-            return Ok(response); // Returns structured JSON
+            return Ok(response);
         }
     }
 

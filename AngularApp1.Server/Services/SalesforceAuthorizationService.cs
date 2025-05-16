@@ -19,7 +19,7 @@ namespace AngularApp1.Server.Services
             return credentials;
         }
 
-        private async Task<string> QueryUserPassword(string accessToken, string logInEmail)
+        private async Task<string> QueryUserPassword(string? accessToken, string logInEmail)
         {
             var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);

@@ -54,7 +54,7 @@ public class AuthController(TokenService tokenService, TokenStore tokenStore, IS
         }
     }
 
-    private async Task<bool> IsSalesforceTokenValid(string token)
+    private async Task<bool> IsSalesforceTokenValid(string? token)
     {
         using var httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);

@@ -2,12 +2,12 @@
 {
     public class TokenStore
     {
-        public string SalesforceJWTToken { get; set; }
+        public string? SalesforceJwtToken { get; set; }
 
-        public string SalesforceAccessToken { get; set; }
+        public string? SalesforceAccessToken { get; set; }
 
-        public string SalesforceRefreshToken { get; set; }
+        public string? SalesforceRefreshToken { get; set; }
 
-        public string SalesforceInstanceUrl { get; set; }
+        public string? SalesforceInstanceUrl { get; set; }
     }
 }

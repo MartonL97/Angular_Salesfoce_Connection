@@ -31,12 +31,12 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
                 throw new Exception("Access token retrieval failed.");
 
             // Store the tokens in TokenStore
-            tokenStore.SalesforceJWTToken = jwtToken;
+            tokenStore.SalesforceJwtToken = jwtToken;
             tokenStore.SalesforceAccessToken = accessToken;
         }
     }
 
-    public string GenerateToken(string username, ProfileType role, string? secretKey)
+    public string? GenerateToken(string username, ProfileType role, string? secretKey)
     {
         var claims = new[]
         {
@@ -65,7 +65,7 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
     }
 
 
-    private async Task<string?> GetSalesforceAccessTokenAsync(string jwtToken)
+    private async Task<string?> GetSalesforceAccessTokenAsync(string? jwtToken)
     {
         var client = new HttpClient();
 
@@ -86,7 +86,6 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
                 return tokenResponse.access_token;
             }
 
-            Console.WriteLine("Error: " + responseString);
             return null;
 
         }
@@ -95,10 +94,9 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
             Console.WriteLine(exception.Message);
             throw;
         }
-
     }
 
-    private string GetJwtToken(string? salesforceUserName, string? salesforceClientSecret, string? salesforceCertificatePw)
+    private string? GetJwtToken(string? salesforceUserName, string? salesforceClientSecret, string? salesforceCertificatePw)
     {
         const string header = "{\"alg\":\"RS256\"}";
         const string claimTemplate = "{{\"iss\": \"{0}\", \"sub\": \"{1}\", \"aud\": \"{2}\", \"exp\": \"{3}\", \"jti\": \"{4}\"}}";
@@ -141,9 +139,9 @@ public class TokenService(IConfiguration configuration, TokenStore tokenStore)
         return token.ToString();
     }
 
-    private FormUrlEncodedContent CreateJwtBearerTokenContent(string jwtToken)
+    private FormUrlEncodedContent CreateJwtBearerTokenContent(string? jwtToken)
     {
-        return new FormUrlEncodedContent(new Dictionary<string, string>
+        return new FormUrlEncodedContent(new Dictionary<string, string?>
         {
             { "grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer" },
             { "assertion", jwtToken }

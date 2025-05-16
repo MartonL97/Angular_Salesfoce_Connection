@@ -15,7 +15,7 @@ namespace AngularApp1.Server.Services
             return response;
         }
 
-        private async Task<string> QuerySalesforceAsync(string accessToken)
+        private async Task<string> QuerySalesforceAsync(string? accessToken)
         {
             var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
