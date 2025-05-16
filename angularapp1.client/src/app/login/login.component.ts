@@ -16,9 +16,16 @@ export class LoginComponent {
     password: '',
   };
 
+  loginFailed = false;
+  errorMessage = '';
+  loading = false;
+
   constructor(private http: HttpClient, private router: Router, private authService: AuthService) { }
 
   onSubmit() {
+    this.loading = true;
+    this.loginFailed = false;
+
     const payload = {
       SalesforceUserName: this.loginData.email,
       Password: this.loginData.password,
@@ -28,18 +35,20 @@ export class LoginComponent {
       .subscribe(
         (response) => {
           console.log('Login success');
+          this.loading = false;
           this.router.navigate(['/success']);
 
           const token = response.token;
           this.authService.saveToken(token);
-
-          const headers = new HttpHeaders({
-            'Authorization': `Bearer ${token}`
-          });
         },
         (error) => {
           console.error('Login failed:', error);
+          this.loading = false;
+          this.loginFailed = true;
+          this.errorMessage = 'Invalid credentials';
         }
       );
   }
 }
+
+

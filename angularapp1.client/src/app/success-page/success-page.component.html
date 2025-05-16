@@ -1,41 +1,47 @@
-<div class="profile-banner">
-  <div class="left-section">
-    <h1>{{ playerData?.Name?.toUpperCase() }}</h1>
-    <p>Position: {{ playerData?.Position__c }}</p>
-    <div class="bio">
-      <p>Age: {{ playerData?.Age__c }}</p>
-      <p>Gender: {{ playerData?.Gender__c }}</p>
-      <div class="team-badge">
-        <img src="team-badge.png" alt="Team Badge"/>
-        <span>{{ playerData?.Team__c }}</span>
+<div *ngIf="loading" class="page-spinner">
+  <div class="spinner"></div>
+</div>
+
+<div *ngIf="!loading">
+  <div class="profile-banner">
+    <div class="left-section">
+      <h1>{{ playerData?.Name?.toUpperCase() }}</h1>
+      <p>Position: {{ playerData?.Position__c }}</p>
+      <div class="bio">
+        <p>Age: {{ playerData?.Age__c }}</p>
+        <p>Gender: {{ playerData?.Gender__c }}</p>
+        <div class="team-badge">
+          <img src="team-badge.png" alt="Team Badge" />
+          <span>{{ playerData?.Team__c }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="center-section">
+      <img class="player-img" src="player-placeholder.png" />
+    </div>
+
+    <div class="right-section">
+      <div class="stat">
+        <span class="label">Height</span>
+        <span class="value">{{ playerData?.Height__c }}cm</span>
+      </div>
+      <div class="stat">
+        <span class="label">Weight</span>
+        <span class="value">{{ playerData?.Weight__c }}kg</span>
+      </div>
+      <div class="stat">
+        <span class="label">Games</span>
+        <span class="value">{{ playerData?.GamesPlayed__c }}</span>
+      </div>
+      <div class="stat">
+        <span class="label">Points</span>
+        <span class="value">{{ playerData?.PointsScored__c }}</span>
       </div>
     </div>
   </div>
 
-  <div class="center-section">
-    <img class="player-img" src="player-placeholder.png"/>
+  <div class="logout-container">
+    <button (click)="onLogout()">Logout</button>
   </div>
-
-  <div class="right-section">
-    <div class="stat">
-      <span class="label">Height</span>
-      <span class="value">{{ playerData?.Height__c }}cm</span>
-    </div>
-    <div class="stat">
-      <span class="label">Weight</span>
-      <span class="value">{{ playerData?.Weight__c }}kg</span>
-    </div>
-    <div class="stat">
-      <span class="label">Games</span>
-      <span class="value">{{ playerData?.GamesPlayed__c }}</span>
-    </div>
-    <div class="stat">
-      <span class="label">Points</span>
-      <span class="value">{{ playerData?.PointsScored__c }}</span>
-    </div>
-  </div>
-</div>
-
-<div class="logout-container">
-  <button (click)="onLogout()">Logout</button>
 </div>

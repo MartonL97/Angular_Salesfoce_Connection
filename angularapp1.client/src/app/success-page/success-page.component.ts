@@ -14,10 +14,13 @@ import { PlayerStats } from '../../Model/layer-stats.model';
 })
 export class SuccessPageComponent implements OnInit {
   playerData: PlayerStats | undefined;
+  loading = true;
 
-  constructor(private router: Router,
+  constructor(
+    private router: Router,
     private http: HttpClient,
-    private authService: AuthService) { }
+    private authService: AuthService
+  ) { }
 
   ngOnInit() {
     const token = this.authService.getToken();
@@ -27,16 +30,17 @@ export class SuccessPageComponent implements OnInit {
         'Authorization': `Bearer ${token}`
       });
 
-      this.http.get('/Salesforce/player', { headers })
-        .subscribe(
-          (response: any) => {
-            this.playerData = response.records[0]; // Assign response to playerData
-            console.log('Player response succesfull:', this.playerData?.Name);
-          },
-          (error) => {
-            console.error('Error calling store API:', error);
-          }
-        );
+      this.http.get('/Salesforce/player', { headers }).subscribe(
+        (response: any) => {
+          this.playerData = response.records[0];
+          this.loading = false;
+          console.log('Player response successful:', this.playerData?.Name);
+        },
+        (error) => {
+          this.loading = false;
+          console.error('Error calling store API:', error);
+        }
+      );
     } else {
       console.warn('No token found. Redirecting to login.');
       this.router.navigate(['/login']);
@@ -44,9 +48,7 @@ export class SuccessPageComponent implements OnInit {
   }
 
   onLogout() {
-    this.authService.removeToken(); // ✅ Use AuthService
+    this.authService.removeToken();
     this.router.navigate(['/login']);
   }
-
-
 }
