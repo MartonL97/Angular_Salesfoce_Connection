@@ -15,7 +15,7 @@ public class AuthController(TokenService tokenService, TokenStore tokenStore, IS
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        logger.LogWarning("Test-> Login request received at {Time}", DateTime.UtcNow);
+        logger.LogInformation("Test-> Login request received at {Time}", DateTime.UtcNow);
 
         var salesforceClaims = new SalesforceJwtClaimOptions(configuration);
 
@@ -45,9 +45,13 @@ public class AuthController(TokenService tokenService, TokenStore tokenStore, IS
                 
                 if (credentials.Email != null)
                     tokenStore.SalesforceRefreshToken = tokenService.GenerateToken(credentials.Email, credentials.ProfileType, salesforceClaims.JwtKey);
+
+                logger.LogInformation("Test-> Login successful at {Time}", DateTime.UtcNow);
+
                 return Ok(new { Token = tokenStore.SalesforceRefreshToken });
             }
 
+            logger.LogInformation("Test-> Login successful at {Time}", DateTime.UtcNow);
             return BadRequest("Invalid Login Request");
         }
         catch(Exception exception)
