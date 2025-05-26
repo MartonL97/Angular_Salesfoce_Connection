@@ -7,9 +7,6 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🔹 Add Application Insights
-builder.Services.AddApplicationInsightsTelemetry();
-
 builder.Configuration.AddUserSecrets<Program>();
 builder.Configuration.AddEnvironmentVariables();
 
@@ -53,6 +50,9 @@ builder.Services.AddAuthorization();
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+// 🔹 Add Application Insights
+builder.Services.AddApplicationInsightsTelemetry();
 
 var app = builder.Build();
 
