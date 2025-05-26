@@ -15,7 +15,7 @@ public class AuthController(TokenService tokenService, TokenStore tokenStore, IS
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        logger.LogInformation("Test-> Login request received at {Time}", DateTime.UtcNow);
+        logger.LogWarning("Test-> Login request received at {Time}", DateTime.UtcNow);
 
         var salesforceClaims = new SalesforceJwtClaimOptions(configuration);
 

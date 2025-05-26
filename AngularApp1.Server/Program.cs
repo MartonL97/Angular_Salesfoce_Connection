@@ -53,13 +53,8 @@ builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 
 // 🔹 Add Application Insights
-builder.Logging.AddApplicationInsights(
-    configureTelemetryConfiguration: (config) =>
-        config.ConnectionString = builder.Configuration.GetConnectionString("InstrumentationKey=4ea0bf97-e9b8-44f4-9947-ce27ca18d96c;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/;ApplicationId=2829b9e9-6985-4b16-af26-b3d521f7fd94"),
-    configureApplicationInsightsLoggerOptions: (options) => { }
-);
+builder.Services.AddApplicationInsightsTelemetry();
 
-builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("*", LogLevel.Trace);
 
 var app = builder.Build();
 
