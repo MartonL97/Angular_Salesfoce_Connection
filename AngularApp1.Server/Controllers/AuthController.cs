@@ -9,12 +9,14 @@ namespace AngularApp1.Server.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(TokenService tokenService, TokenStore tokenStore, ISalesforceAuthService salesforceAuthService, IConfiguration configuration)
+public class AuthController(TokenService tokenService, TokenStore tokenStore, ISalesforceAuthService salesforceAuthService, IConfiguration configuration, ILogger<AuthController> logger)
     : ControllerBase
 {
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
+        logger.LogInformation("Test-> Login request received at {Time}", DateTime.UtcNow);
+
         var salesforceClaims = new SalesforceJwtClaimOptions(configuration);
 
         try

@@ -1,4 +1,4 @@
-using AngularApp1.Server.Data;
+﻿using AngularApp1.Server.Data;
 using AngularApp1.Server.Interfaces;
 using AngularApp1.Server.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -6,6 +6,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// 🔹 Add Application Insights
+builder.Services.AddApplicationInsightsTelemetry();
 
 builder.Configuration.AddUserSecrets<Program>();
 builder.Configuration.AddEnvironmentVariables();
