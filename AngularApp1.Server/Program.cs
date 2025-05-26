@@ -52,7 +52,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 
 // 🔹 Add Application Insights
-builder.Services.AddApplicationInsightsTelemetry();
+builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["ApplicationInsights:ConnectionString"]);
 
 var app = builder.Build();
 
